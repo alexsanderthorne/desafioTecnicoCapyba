@@ -24,10 +24,43 @@ def criar_pessoa():
         return jsonify({"error": "CPF já existe"}), 400
     except Exception as e:
         return pessoa_schema.jsonify(pessoa)
-    
-@bp.route('', methods=['GET'])
-def listar_contatos(id_pessoa):
-    Pessoa.query.get_or_404(id_pessoa)
-    pessoa = Pessoa.query.filter_by(pessoa_id=id_pessoa).all()
-    return pessoa_schema.jsonify(pessoa)
 
+
+# Buscar pessoa pelo CPF (usando query parameter)
+@bp.route('', methods=['GET'])
+def buscar_pessoa_por_cpf():
+    cpf = request.args.get('cpf')  # Obtém o CPF do parâmetro de consulta
+    if not cpf:
+        return jsonify({"error": "CPF não fornecido"}), 400
+
+    try:
+        pessoa = Pessoa.query.filter_by(cpf=cpf).first()
+        if pessoa:
+            return pessoa_schema.jsonify(pessoa), 200
+        else:
+            return jsonify({"error": "Pessoa não encontrada"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Atualizar uma pessoa existente
+@bp.route('/<int:id>', methods=['PUT'])
+def atualizar_pessoa(id):
+    pessoa = Pessoa.query.get_or_404(id)
+    data = request.get_json()
+
+    try:
+        # Atualiza apenas os campos que vierem no JSON
+        for key, value in data.items():
+            setattr(pessoa, key, value)
+
+        # Validação dos dados atualizados
+        pessoa_schema.load(data, partial=True)  # partial=True permite atualização parcial
+
+        db.session.commit()
+        return pessoa_schema.jsonify(pessoa), 200
+
+    except IntegrityError:
+        db.session.rollback()
+        return jsonify({"error": "CPF já existe"}), 400
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
