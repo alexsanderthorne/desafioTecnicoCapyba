@@ -66,3 +66,10 @@ def atualizar_pessoa(id):
         return jsonify({"error": "CPF já existe"}), 400
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+@bp.route('/<int:id>', methods=['DELETE'])
+def deletar_pessoa(id):
+    pessoa = Pessoa.query.get_or_404(id)
+    db.session.delete(pessoa)
+    db.session.commit()
+    return jsonify({"mensagem": "Pessoa deletada com sucesso."}), 200

@@ -2,6 +2,8 @@ from flask import Blueprint, request, jsonify
 from app.models.usuario import Usuario
 from app.database import db
 from flask_jwt_extended import create_access_token
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 
 bp = Blueprint('auth_routes', __name__, url_prefix='/auth')
 
@@ -33,5 +35,12 @@ def login():
     if not usuario or not usuario.verificar_senha(senha):
         return jsonify({"erro": "Credenciais inválidas"}), 401
 
-    access_token = create_access_token(identity=usuario.id)
+    access_token = create_access_token(identity=str(usuario.id))
     return jsonify(access_token=access_token), 200
+
+
+@bp.route('/logout', methods=['POST'])
+@jwt_required()
+def logout():
+    usuario_id = get_jwt_identity()
+    return jsonify({"mensagem": f"Logout realizado com sucesso (usuário {usuario_id})"}), 200
