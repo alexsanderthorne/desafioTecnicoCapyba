@@ -4,3 +4,5 @@ flask-marshmallow
 marshmallow-sqlalchemy
 flask-migrate
 python-dotenv
+flask-jwt-extended
+passlib[bcrypt]

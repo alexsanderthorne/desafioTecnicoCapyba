@@ -3,6 +3,7 @@ from app.models.pessoa import Pessoa
 from app.schemas.pessoa_schema import PessoaSchema
 from app.database import db
 from sqlalchemy.exc import IntegrityError
+from flask_jwt_extended import jwt_required
 
 from datetime import datetime
 
@@ -44,6 +45,7 @@ def buscar_pessoa_por_cpf():
 
 # Atualizar uma pessoa existente
 @bp.route('/<int:id>', methods=['PUT'])
+@jwt_required()
 def atualizar_pessoa(id):
     pessoa = Pessoa.query.get_or_404(id)
     data = request.get_json()
