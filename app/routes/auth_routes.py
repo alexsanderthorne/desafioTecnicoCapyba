@@ -44,3 +44,25 @@ def login():
 def logout():
     usuario_id = get_jwt_identity()
     return jsonify({"mensagem": f"Logout realizado com sucesso (usuário {usuario_id})"}), 200
+
+
+@bp.route('/alterar-senha', methods=['PUT'])
+@jwt_required()
+def alterar_senha():
+    usuario_id = int(get_jwt_identity())
+    usuario = Usuario.query.get_or_404(usuario_id)
+
+    data = request.get_json()
+    senha_atual = data.get('senha_atual')
+    nova_senha = data.get('nova_senha')
+
+    if not senha_atual or not nova_senha:
+        return jsonify({"erro": "Você deve fornecer senha atual e nova senha"}), 400
+
+    if not usuario.verificar_senha(senha_atual):
+        return jsonify({"erro": "Senha atual incorreta"}), 401
+
+    usuario.set_senha(nova_senha)
+    db.session.commit()
+
+    return jsonify({"mensagem": "Senha atualizada com sucesso."}), 200

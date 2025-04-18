@@ -4,8 +4,10 @@ from app.schemas.pessoa_schema import PessoaSchema
 from app.database import db
 from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required
-
+from sqlalchemy import or_
 from datetime import datetime
+from sqlalchemy import or_, asc, desc
+
 
 bp = Blueprint('pessoa_routes', __name__, url_prefix='/pessoas')
 pessoa_schema = PessoaSchema()
@@ -73,3 +75,46 @@ def deletar_pessoa(id):
     db.session.delete(pessoa)
     db.session.commit()
     return jsonify({"mensagem": "Pessoa deletada com sucesso."}), 200
+
+@bp.route('/paginado', methods=['GET'])
+@jwt_required()
+def listar_pessoas_paginado():
+    page = request.args.get('page', default=1, type=int)
+    page_size = request.args.get('page_size', default=10, type=int)
+    search = request.args.get('search', default='', type=str)
+    ordering = request.args.get('ordering', default='nome', type=str)
+    ativo = request.args.get('ativo', type=str)
+
+    query = Pessoa.query
+
+    # Filtro textual
+    if search:
+        query = query.filter(
+            or_(
+                Pessoa.nome.ilike(f"%{search}%"),
+                Pessoa.cpf.ilike(f"%{search}%")
+            )
+        )
+
+    # Filtro por campo 'ativo' (se existir no model Pessoa)
+    if ativo is not None:
+        query = query.filter(Pessoa.ativo == (ativo.lower() == 'true'))
+
+    # Ordenação (ascendente ou descendente)
+    if ordering.startswith('-'):
+        coluna = ordering[1:]
+        if hasattr(Pessoa, coluna):
+            query = query.order_by(desc(getattr(Pessoa, coluna)))
+    else:
+        if hasattr(Pessoa, ordering):
+            query = query.order_by(asc(getattr(Pessoa, ordering)))
+
+    total = query.count()
+    pessoas_paginadas = query.offset((page - 1) * page_size).limit(page_size).all()
+
+    return jsonify({
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "resultados": pessoas_schema.dump(pessoas_paginadas)
+    }), 200
