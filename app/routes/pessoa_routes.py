@@ -15,6 +15,7 @@ pessoas_schema = PessoaSchema(many=True)
 
 # Criar uma nova pessoa
 @bp.route('', methods=['POST'])
+#@jwt_required()
 def criar_pessoa():
     try:
         data = request.get_json()
@@ -30,6 +31,7 @@ def criar_pessoa():
 
 
 # Buscar pessoa pelo CPF (usando query parameter)
+@jwt_required()
 @bp.route('', methods=['GET'])
 def buscar_pessoa_por_cpf():
     cpf = request.args.get('cpf')  # Obtém o CPF do parâmetro de consulta

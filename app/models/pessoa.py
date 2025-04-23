@@ -10,6 +10,8 @@ class Pessoa(db.Model):
     email = db.Column(db.String(100), nullable=False)
 
     ativo = db.Column(db.Boolean, default=True)
+    email_verificado = db.Column(db.Boolean, default=False)
+    token_verificacao = db.Column(db.String(100), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     __table_args__ = (

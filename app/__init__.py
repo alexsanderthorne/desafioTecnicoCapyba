@@ -4,7 +4,7 @@ from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from .database import db
 from flask_jwt_extended import JWTManager
-from .routes import auth_routes
+from .routes import auth_routes, email_routes
 
 
 ma = Marshmallow()
@@ -29,6 +29,7 @@ def create_app():
     app.register_blueprint(pessoa_routes.bp)
     app.register_blueprint(contato_routes.bp)
     app.register_blueprint(auth_routes.bp)
+    app.register_blueprint(email_routes.email_bp)
 
 
     return app
