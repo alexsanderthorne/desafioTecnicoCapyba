@@ -24,14 +24,14 @@ Gerencia pessoas, autenticação, confirmação de e-mail e muito mais.
 ### 🔹 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/capyba-api.git
-cd capyba-api
+git clone https://github.com/alexsanderthorne/desafioTecnicoCapyba.git
+cd desafioTecnicoCapyba/
 ```
 
 ### 🔹 2. Crie um ambiente virtual
 
 ```bash
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Linux/macOS
 venv\Scripts\activate     # Windows
 ```
@@ -39,7 +39,7 @@ venv\Scripts\activate     # Windows
 ### 🔹 3. Instale as dependências
 
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 ---
@@ -64,6 +64,8 @@ flask run
 
 A aplicação estará disponível em:  
 👉 `http://127.0.0.1:5000`
+
+Você pode testar as requests no postman ou insomnia:  
 
 ---
 
