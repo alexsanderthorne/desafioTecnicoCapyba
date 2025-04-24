@@ -25,9 +25,8 @@ def create_app():
     jwt.init_app(app)
     jwt.init_app(app)
 
-    from .routes import pessoa_routes, contato_routes
+    from .routes import pessoa_routes
     app.register_blueprint(pessoa_routes.bp)
-    app.register_blueprint(contato_routes.bp)
     app.register_blueprint(auth_routes.bp)
     app.register_blueprint(email_routes.email_bp)
 

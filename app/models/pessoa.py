@@ -20,4 +20,3 @@ class Pessoa(db.Model):
     )
 
 
-    #contatos = db.relationship('Contato', backref='pessoa', cascade='all, delete-orphan', lazy=True)
