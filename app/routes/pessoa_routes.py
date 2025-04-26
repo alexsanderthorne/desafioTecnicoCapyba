@@ -25,7 +25,7 @@ def criar_pessoa():
         return pessoa_schema.jsonify(pessoa), 201
     except IntegrityError:
         db.session.rollback()
-        return jsonify({"error": "CPF já existe"}), 400
+        return jsonify({"error": "CPF ou email já cadastrado"}), 400
     except Exception as e:
         return pessoa_schema.jsonify(pessoa)
 
@@ -139,3 +139,53 @@ def listar_pessoas_restritas():
     pessoas_resultado = [{"id": p.id, "nome": p.nome, "email": p.email} for p in pessoas_restritas]
 
     return jsonify({"pessoas_restritas": pessoas_resultado}), 200
+
+@bp.route('/filtro', methods=['GET'])
+@jwt_required()
+def filtrar_pessoas():
+    page = request.args.get('page', 1, type=int)
+    page_size = request.args.get('page_size', 10, type=int)
+    search = request.args.get('search', '', type=str)
+    email_verificado = request.args.get('email_verificado', type=str)
+    ativo = request.args.get('ativo', type=str)
+    ordering = request.args.get('ordering', 'nome', type=str)
+
+    query = Pessoa.query
+
+    # 🔍 Busca textual
+    if search:
+        query = query.filter(
+            or_(
+                Pessoa.nome.ilike(f"%{search}%"),
+                Pessoa.cpf.ilike(f"%{search}%"),
+                Pessoa.email.ilike(f"%{search}%")
+            )
+        )
+
+    # ✅ Filtros booleanos
+    if email_verificado is not None:
+        query = query.filter(Pessoa.email_verificado == (email_verificado.lower() == 'true'))
+
+    if ativo is not None:
+        query = query.filter(Pessoa.ativo == (ativo.lower() == 'true'))
+
+    # ↕️ Ordenação
+    if ordering.startswith('-'):
+        col = ordering[1:]
+        if hasattr(Pessoa, col):
+            query = query.order_by(desc(getattr(Pessoa, col)))
+    else:
+        if hasattr(Pessoa, ordering):
+            query = query.order_by(asc(getattr(Pessoa, ordering)))
+
+    # 📄 Paginação
+    total = query.count()
+    pessoas = query.offset((page - 1) * page_size).limit(page_size).all()
+    pessoas_serializadas = pessoas_schema.dump(pessoas)
+
+    return jsonify({
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "resultados": pessoas_serializadas
+    }), 200
