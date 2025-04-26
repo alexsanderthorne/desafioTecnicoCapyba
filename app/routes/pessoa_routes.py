@@ -3,7 +3,7 @@ from app.models.pessoa import Pessoa
 from app.schemas.pessoa_schema import PessoaSchema
 from app.database import db
 from sqlalchemy.exc import IntegrityError
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import or_
 from datetime import datetime
 from sqlalchemy import or_, asc, desc
@@ -120,3 +120,22 @@ def listar_pessoas_paginado():
         "page_size": page_size,
         "resultados": pessoas_schema.dump(pessoas_paginadas)
     }), 200
+
+@bp.route('/pessoas-restritas', methods=['GET'])
+@jwt_required()
+def listar_pessoas_restritas():
+    # Obter o ID do usuário autenticado via token JWT
+    usuario_id = get_jwt_identity()
+
+    # Verificar se o usuário tem o e-mail confirmado
+    usuario = Pessoa.query.get_or_404(usuario_id)
+    if not usuario.email_verificado:
+        return jsonify({"error": "E-mail não verificado. Acesso negado."}), 403
+
+    # Exemplo de lista de pessoas restritas (substitua conforme necessário)
+    pessoas_restritas = Pessoa.query.filter_by(email_verificado=True).all()
+
+    # Serializar os resultados (Você pode ajustar o schema conforme necessário)
+    pessoas_resultado = [{"id": p.id, "nome": p.nome, "email": p.email} for p in pessoas_restritas]
+
+    return jsonify({"pessoas_restritas": pessoas_resultado}), 200
