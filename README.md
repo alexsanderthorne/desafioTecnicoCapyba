@@ -1,11 +1,11 @@
-# 🐍 Capyba API RESTful
+# Capyba API RESTful
 
 API RESTful desenvolvida em Flask para o desafio técnico da Capyba.  
 Gerencia pessoas, autenticação, confirmação de e-mail e muito mais.
 
 ---
 
-## 🚀 Tecnologias utilizadas
+## Tecnologias utilizadas
 
 - Python 3.10+
 - Flask
@@ -19,16 +19,16 @@ Gerencia pessoas, autenticação, confirmação de e-mail e muito mais.
 
 ---
 
-## ⚙️ Instalação do projeto
+## Instalação do projeto
 
-### 🔹 1. Clone o repositório
+### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/alexsanderthorne/desafioTecnicoCapyba.git
 cd desafioTecnicoCapyba/
 ```
 
-### 🔹 2. Crie um ambiente virtual
+### 2. Crie um ambiente virtual
 
 ```bash
 python3 -m venv venv
@@ -36,7 +36,7 @@ source venv/bin/activate  # Linux/macOS
 venv\Scripts\activate     # Windows
 ```
 
-### 🔹 3. Instale as dependências
+### 3. Instale as dependências
 
 ```bash
 pip3 install -r requirements.txt
@@ -44,9 +44,9 @@ pip3 install -r requirements.txt
 
 ---
 
-## 🛠️ Configuração do banco de dados
+## Configuração do banco de dados
 
-### 🔹 4. Inicialize as migrações e o banco de dados
+### 4. Inicialize as migrações e o banco de dados
 
 ```bash
 flask db init         # apenas na primeira vez
@@ -56,27 +56,27 @@ flask db upgrade
 Após executar as migrações será gerado um arquivo .db na pasta instance, onde voçê pode consultar a persintência dos dados no banco de dados
 ---
 
-## ▶️ Executando o projeto
+## Executando o projeto
 
 ```bash
 flask run
 ```
 
 A aplicação estará disponível em:  
-👉 `http://127.0.0.1:5000`
+`http://127.0.0.1:5000`
 
 Você pode testar as requests no postman ou insomnia:  
 
 ---
 
-## 🔐 Autenticação
+## Autenticação
 
 Utilize o endpoint `/auth/login` para obter um token JWT.  
 Adicione o token como `Bearer` no header `Authorization` para acessar rotas protegidas.
 
 ---
 
-## 📬 Confirmação de e-mail
+## Confirmação de e-mail
 
 ### Enviar token:
 ```http
@@ -92,7 +92,7 @@ Body: { "email": "exemplo@email.com", "token": "123456" }
 
 ---
 
-## 📮 Testes com Postman
+## Testes com Postman
 
 Você pode importar a [coleção Postman disponível aqui](https://drive.google.com/file/d/1TCF_pU-LOefgPOg8xMadYPM4czxsZhFg/view?usp=sharing)  
 Ela já inclui:
@@ -102,7 +102,13 @@ Ela já inclui:
 
 ---
 
-## 📌 Estrutura de pastas
+Diagrama de fluxo
+
+![_Fluxograma](https://github.com/user-attachments/assets/f2d13461-0364-4fa0-b764-84393c83ac1e)
+
+---
+
+## Estrutura de pastas
 
 ```
 capyba-api/
@@ -121,8 +127,8 @@ capyba-api/
 
 ---
 
-## 📧 Contato
+## Contato
 
-Desenvolvido por [Alexsander Araujo] para o desafio Capyba.  
+Desenvolvido por Alexsander Araujo para o desafio Capyba.  
 LinkedIn: https://www.linkedin.com/in/alexsanderaraujo4/ 
 Email: alexsanderthorne@gmail.com
